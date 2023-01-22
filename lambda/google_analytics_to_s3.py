@@ -61,11 +61,12 @@ def generate_access_token():
 def most_visited_pages(access_token):
     url = f'https://analyticsdata.googleapis.com/v1beta/properties/327357256:runReport?access_token={access_token}'
     try:
-        logging.info("[Google Analytics] Fetching user count.")
-        response = requests.post(url, json={"dimensions": [{"name": "unifiedPagePathScreen"}, 
-                                                                            {"name": "unifiedScreenName"}], "metrics": [{"name": "averageSessionDuration"}, 
-                                                                            {"name": "screenPageViews"}, {"name": "screenPageViewsPerSession"}, 
-                                                                            {"name": "totalUsers"}], "dateRanges": [{"startDate": "7daysAgo", "endDate": "today"}]})
+        logging.info("[Google Analytics] Fetching user mos visited pages data.")
+        request_body = {"dimensions": [{"name": "unifiedPagePathScreen"}, 
+                                                                      {"name": "unifiedScreenName"}], "metrics": [{"name": "averageSessionDuration"}, 
+                                                                      {"name": "screenPageViews"}, {"name": "screenPageViewsPerSession"}, 
+                                                                      {"name": "totalUsers"}], "dateRanges": [{"startDate": "7daysAgo", "endDate": "today"}]}
+        response = requests.post(url, json=request_body)
     except Exception as e:
         logging.debug("[Google Analytics] Error fetching data", e)
     else:
