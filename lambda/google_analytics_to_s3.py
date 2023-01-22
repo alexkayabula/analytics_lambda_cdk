@@ -16,8 +16,8 @@ def handler(event, context):
 
         # Fetch data from Google Analytics.
         access_token = generate_access_token()
-        analytics_data= most_visited_pages(access_token=access_token)
-        data.append({"Most visited pages": analytics_data})
+        most_visited_pages = most_visited_pages(access_token=access_token)
+        data.append(most_visited_pages)
 
         # Generate csv  file.
         now = datetime.now()
@@ -81,18 +81,18 @@ def most_visited_pages(access_token):
                 total_engagement_time = item["metricValues"][2]["value"]
                 avg_engagement_time = float(total_engagement_time)/ float(users)
 
-                most_visited_pages.append({"page": item["dimensionValues"][1], 
+                most_visited_pages.append({"page": item["dimensionValues"][1]['value'], 
                                                                         "views": item["metricValues"][0]["value"],
-                                                                        "info": item["dimensionValues"][0],
+                                                                        "info": item["dimensionValues"][0]['value'],
                                                                         "views_per_user": views_per_user,
                                                                         "average_engagement_time": avg_engagement_time})
             else:
                 views_per_user = 'n/a'
                 avg_engagement_time = 'n/a'
 
-                most_visited_pages.append({"page": item["dimensionValues"][1], 
+                most_visited_pages.append({"page": item["dimensionValues"][1]['value'], 
                                                                         "views": item["metricValues"][0]["value"],
-                                                                        "info": item["dimensionValues"][0],
+                                                                        "info": item["dimensionValues"][0]['value'],
                                                                         "views_per_user": views_per_user,
                                                                         "average_engagement_time": avg_engagement_time})
     
