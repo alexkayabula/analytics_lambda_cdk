@@ -13,7 +13,7 @@ def handler(event, context):
     try:
         data = []
         s3_client = boto3.client('s3')
-        bucket = "ga-bucket"
+        bucket = os.getenv('S3_BUCKET')
 
         # Fetch data from Google Analytics.
         access_token = generate_access_token()
@@ -23,12 +23,12 @@ def handler(event, context):
         # Generate csv  file.
         now = datetime.now()
         date = now.strftime("%d-%m-%Y")
-        fileName = "test" + date + ".csv"
+        fileName = "test-" + date + ".csv"
         csvio = io.StringIO()
         writer = csv.writer(csvio)
-        headers = list(data[0].keys())
+        headers = list(data[0][0].keys())
         writer.writerow(headers)
-        for item in data[0]["Most visited pages"]:
+        for item in data[0]:
             values = list(item.values())
             writer.writerow(values)
             # Upload csv file to s3 bucket.
@@ -86,6 +86,7 @@ def fetch_visited_pages(access_token):
 
                 most_visited_pages.append({"page": item["dimensionValues"][1]['value'], 
                                                                         "views": item["metricValues"][0]["value"],
+                                                                         "users" : users,
                                                                         "info": item["dimensionValues"][0]['value'],
                                                                         "views_per_user": views_per_user,
                                                                         "average_engagement_time": avg_engagement_time})
@@ -95,6 +96,7 @@ def fetch_visited_pages(access_token):
 
                 most_visited_pages.append({"page": item["dimensionValues"][1]['value'], 
                                                                         "views": item["metricValues"][0]["value"],
+                                                                         "users" : users,
                                                                         "info": item["dimensionValues"][0]['value'],
                                                                         "views_per_user": views_per_user,
                                                                         "average_engagement_time": avg_engagement_time})
