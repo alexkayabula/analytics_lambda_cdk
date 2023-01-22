@@ -19,7 +19,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             runtime=_lambda.Runtime.PYTHON_3_8,
             code=_lambda.Code.from_asset('./lambda'),
             handler='google_analytics_to_s3.handler',
-            timeout=Duration.seconds(60)
+            timeout=Duration.seconds(180)
         )
 
         s3_to_postgresql_lambda = _lambda.Function(
@@ -27,7 +27,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             runtime=_lambda.Runtime.PYTHON_3_8,
             code=_lambda.Code.from_asset('./lambda'),
             handler='s3_to_postgresql.handler',
-            timeout=Duration.seconds(60)
+            timeout=Duration.seconds(180)
         )
 
         # Run every day at 6PM UTC
