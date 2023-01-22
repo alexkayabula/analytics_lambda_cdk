@@ -1,4 +1,5 @@
 import io
+import os
 import json
 import logging
 import csv
@@ -16,7 +17,7 @@ def handler(event, context):
 
         # Fetch data from Google Analytics.
         access_token = generate_access_token()
-        most_visited_pages = most_visited_pages(access_token=access_token)
+        most_visited_pages = fetch_visited_pages(access_token=access_token)
         data.append(most_visited_pages)
 
         # Generate csv  file.
@@ -47,19 +48,21 @@ def generate_access_token():
     Returns:
         An access token that is associated with the service account credentials.
     """
+    SCOPE = os.getenv('SCOPE')
     s3_client = boto3.client('s3')
-    bucket = "ga-bucket"
+    bucket = os.getenv('S3_BUCKET')
     s3_json_object = s3_client.get_object(Bucket=bucket, Key="google_analytics_secrets.json")
     json_file = s3_json_object['Body'].read().decode("utf-8")
     json_data = json.loads(json_file)
-    credentials = ServiceAccountCredentials.from_json_keyfile_dict(keyfile_dict=json_data, scopes=['https://www.googleapis.com/auth/analytics.readonly'])
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(keyfile_dict=json_data, scopes=[SCOPE])
     access_token = credentials.get_access_token()[0]
     return access_token
 
 
 # Fetch Most visited pages in the last 7 days data.
-def most_visited_pages(access_token):
-    url = f'https://analyticsdata.googleapis.com/v1beta/properties/327357256:runReport?access_token={access_token}'
+def fetch_visited_pages(access_token):
+    GOOGLE_ANALYTICS_URL = os.getenv('GOOGLE_ANALYTICS_URL')
+    url = f'{GOOGLE_ANALYTICS_URL}{access_token}'
     try:
         logging.info("[Google Analytics] Fetching user mos visited pages data.")
         request_body = {"dimensions": [{"name": "unifiedPagePathScreen"}, 
