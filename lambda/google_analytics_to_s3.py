@@ -48,7 +48,7 @@ def generate_access_token():
         An access token that is associated with the service account credentials.
     """
     s3_client = boto3.client('s3')
-    bucket = "BUCKET"
+    bucket = "ga-bucket"
     s3_json_object = s3_client.get_object(Bucket=bucket, Key="google_analytics_secrets.json")
     json_file = s3_json_object['Body'].read().decode("utf-8")
     json_data = json.loads(json_file)
