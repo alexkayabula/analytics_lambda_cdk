@@ -21,8 +21,6 @@ def handler(event, context):
         data.append(most_visited_pages)
 
         # Generate csv  file.
-        now = datetime.now()
-        date = now.strftime("%d-%m-%Y")
         fileName = "most-visited-pages-7days" + ".csv"
         csvio = io.StringIO()
         writer = csv.writer(csvio)
