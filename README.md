@@ -1,8 +1,9 @@
 
 ## Google Analytics to AWS Data pipeline!
 ### Architectural Diagram 
-#### Documentation: https://docs.google.com/document/d/1RVJVExn5PTyuFa3BcTEFBoKaBXfkeqAlcIWjNxAupIE/edit?usp=sharing
-![alt text](https://github.com/[alexkayabula]/[google-analytics-lambda-cdk]/blob/[main]/google-analytics-lambda-cdk/infrastructure-diagram.png?raw=true)
+#### Documentation:
+ https://docs.google.com/document/d/1RVJVExn5PTyuFa3BcTEFBoKaBXfkeqAlcIWjNxAupIE/edit?usp=sharing
+
 
 To manually create a virtualenv on MacOS and Linux:
 
