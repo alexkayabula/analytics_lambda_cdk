@@ -32,12 +32,10 @@ jobs:
 
       - name: Install Requirements 
         run: 'pip3 install -r requirements.txt'
-        working-directory: google-analytics-lambda-cdk
 
       - name: CDK Synth
         run: cdk synth
-        working-directory: google-analytics-lambda-cdk
 
       - name: CDK Deploy
         run: cdk deploy
-        working-directory: google-analytics-lambda-cdk
+        
