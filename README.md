@@ -1,16 +1,8 @@
 
-# Welcome to your CDK Python project!
-
-You should explore the contents of this project. It demonstrates a CDK app with an instance of a stack (`google_analytics_lambda_cdk_stack`)
-which contains an Amazon SQS queue that is subscribed to an Amazon SNS topic.
-
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
-
-This project is set up like a standard Python project.  The initialization process also creates
-a virtualenv within this project, stored under the .venv directory.  To create the virtualenv
-it assumes that there is a `python3` executable in your path with access to the `venv` package.
-If for any reason the automatic creation of the virtualenv fails, you can create the virtualenv
-manually once the init process completes.
+## Google Analytics to AWS Data pipeline!
+### Architectural Diagram 
+#### Documentation: https://docs.google.com/document/d/1RVJVExn5PTyuFa3BcTEFBoKaBXfkeqAlcIWjNxAupIE/edit?usp=sharing
+![alt text](https://github.com/[alexkayabula]/[google-analytics-lambda-cdk]/blob/[main]/infrastructure-diagram.png?raw=true)
 
 To manually create a virtualenv on MacOS and Linux:
 
@@ -54,7 +46,7 @@ To add additional dependencies, for example other CDK libraries, just add to
 your requirements.txt file and rerun the `pip install -r requirements.txt`
 command.
 
-## Useful commands
+### Useful commands
 
  * `cdk ls`          list all stacks in the app
  * `cdk synth`       emits the synthesized CloudFormation template
