@@ -36,5 +36,8 @@ jobs:
       - name: CDK Diff
         run: cdk diff
 
+      - name: CDK Bootstrap
+        run: cdk bootstrap
+
       - name: CDK Deploy
         run: cdk deploy
