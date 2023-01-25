@@ -23,7 +23,7 @@ def handler(event, context):
         # Generate csv  file.
         now = datetime.now()
         date = now.strftime("%d-%m-%Y")
-        fileName = "test-" + date + ".csv"
+        fileName = "most-visited-pages-7days" + ".csv"
         csvio = io.StringIO()
         writer = csv.writer(csvio)
         headers = list(data[0][0].keys())

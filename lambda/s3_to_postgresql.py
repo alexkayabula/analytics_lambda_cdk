@@ -28,10 +28,10 @@ def handler(event, context):
     """
 
     with conn.cursor() as cur:
-        cur.execute("CREATE EXTENSION aws_s3 CASCADE;")
-        cur.execute("DROP TABLE IF EXISTS most_visited_pages_7days;")
+        cur.execute("CREATE EXTENSION IF NOT EXISTS aws_s3 CASCADE;")
+        cur.execute("DROP TABLE most_visited_pages_7days;")
         cur.execute("CREATE TABLE most_visited_pages_7days(page varchar(255), views varchar(255), users varchar(255), viewsPerUser varchar(255), avgEngagementTime varchar(255));")
-        cur.execute("SELECT aws_s3.table_import_from_s3( 'most_visited_pages_7days','','(format csv)','(ga-bucket,test-23-01-2023.csv,ap-northeast-1)');")
+        cur.execute("SELECT aws_s3.table_import_from_s3( 'most_visited_pages_7days','','(format csv)','(ga-bucket,most-visited-pages-7days.csv,ap-northeast-1)');")
     conn.commit()
 
     logger.info("SUCCESS: Added items to RDS PostgreSQL table.")
