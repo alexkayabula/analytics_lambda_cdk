@@ -36,6 +36,9 @@ jobs:
       - name: CDK Diff
         run: cdk diff
 
+      - name: CDK Synth
+        run: cdk synth
+
       - name: CDK Bootstrap
         run: cdk bootstrap
 
