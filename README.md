@@ -4,7 +4,7 @@
 #### Documentation:
 https://docs.google.com/document/d/1RVJVExn5PTyuFa3BcTEFBoKaBXfkeqAlcIWjNxAupIE/edit?usp=sharing
 
-#### Documentation:
+#### Architectural Diagram:
 ![infra drawio](https://user-images.githubusercontent.com/31479458/214612458-c75d6849-be4f-4ec2-a11a-eb2933953adb.png)
 
 To manually create a virtualenv on MacOS and Linux:
