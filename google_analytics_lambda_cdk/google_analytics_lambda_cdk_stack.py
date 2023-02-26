@@ -41,7 +41,6 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         )
         rds_import_role.add_to_policy(iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
-            effect=iam.Effect.ALLOW,
             actions=["s3:GetObject", "s3:ListBucket"],
             resources=[s3_bucket.bucket_arn, s3_bucket.bucket_arn + "/*"]
         ))
