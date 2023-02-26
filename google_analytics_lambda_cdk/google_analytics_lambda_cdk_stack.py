@@ -23,7 +23,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         # Templated secret with username and password fields
         templated_secret = secretsmanager.Secret(self, "TemplatedSecret",
             generate_secret_string=secretsmanager.SecretStringGenerator(
-                secret_string_template=json.loads({"username": "postgres"}),
+                secret_string_template=json.dumps({"username": "postgres"}),
                 generate_string_key="password"
             )
         )
@@ -44,7 +44,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             instance_identifier="mydbinstance",
             port=5432,
             credentials={
-            "username": templated_secret.secret_value_from_json("username").to_string(),
+            "username": templated_secret.secret_value_from_json("username"),
             "password": templated_secret.secret_value_from_json("password")
         }
         )
