@@ -8,8 +8,7 @@ import boto3
 from helper import generate_access_token
 from data_last_7days import fetch_visited_pages
 
-# Set environment variables
-S3_BUCKET = "MyS3Bucket"
+S3_BUCKET = "my-s3-bucket-2024"
 s3_client = boto3.client('s3')
 
 def handler(event, context):
