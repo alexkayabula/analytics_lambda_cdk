@@ -20,16 +20,34 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # Create an IAM role for importing data from S3
-        rds_role = iam.Role(self, "ImportRole",
+      # Create an S3 bucket
+        s3_bucket = s3.Bucket(self, "MyS3Bucket")
+        s3_bucket.add_to_resource_policy(iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=["s3:GetObject"],
+            resources=[s3_bucket.arn_for_objects("*")],
+            principals=[iam.AnyPrincipal()]
+        ))
+        s3_bucket.add_to_resource_policy(iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=["s3:ListBucket"],
+            resources=[s3_bucket.bucket_arn],
+            principals=[iam.AnyPrincipal()]
+        ))
+
+        # Create an IAM role for the RDS Instance
+        rds_import_role = iam.Role(self, "RDSImportRole",
             assumed_by=iam.ServicePrincipal("rds.amazonaws.com")
         )
-        rds_role.add_to_policy(iam.PolicyStatement(
+        rds_import_role.add_to_policy(iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
             effect=iam.Effect.ALLOW,
             actions=["s3:GetObject", "s3:ListBucket"],
-            resources=[bucket.bucket_arn, bucket.bucket_arn + "/*"]
+            resources=[s3_bucket.bucket_arn, s3_bucket.bucket_arn + "/*"]
         ))
+
+         #  Add permissions to the IAM role for the RDS Instance to import s3 data
+        s3_bucket.grant_read_write(rds_import_role)
 
         # Simple secret
         secret = secretsmanager.Secret(self, "Secret")
@@ -50,36 +68,12 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             instance_identifier="mydbinstance",
             port=5432,
             credentials=rds.Credentials.from_secret(secret),
-            s3_import_role=rds_role
+            s3_import_role=rds_import_role
         )
-
-        # Create an S3 bucket
-        s3_bucket = s3.Bucket(self, "MyS3Bucket")
-        s3_bucket.add_to_resource_policy(iam.PolicyStatement(
-            effect=iam.Effect.ALLOW,
-            actions=["s3:GetObject"],
-            resources=[s3_bucket.arn_for_objects("*")],
-            principals=[iam.AnyPrincipal()]
-        ))
-        s3_bucket.add_to_resource_policy(iam.PolicyStatement(
-            effect=iam.Effect.ALLOW,
-            actions=["s3:ListBucket"],
-            resources=[s3_bucket.bucket_arn],
-            principals=[iam.AnyPrincipal()]
-        ))
-
-        # Create an IAM role for the RDS instance to access S3
-        rds_role = iam.Role(
-            self, "RDSRole",
-            assumed_by=iam.ServicePrincipal("rds.amazonaws.com"),
-        )
-
-        # Grant the IAM role permissions to access the S3 bucket
-        s3_bucket.grant_read_write(rds_role)
 
 
         #  Create an IAM role for the Lambda functions
-        role = iam.Role(
+        lambda_role = iam.Role(
             self, "MyLambdaRole",
             assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
             managed_policies=[
@@ -89,18 +83,18 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             ]
         )
 
-        #  Add permissions to the IAM role for the Lambda functions
-        s3_bucket.grant_read_write(role)
+        #  Add permissions to the IAM role for the Lambda functions to access s3 bucket
+        s3_bucket.grant_read_write(lambda_role)
 
 
-        #  Defines an AWS Lambda resource
+        #  Defines an AWS Lambda resources
         google_analytics_to_s3_lambda = _lambda.Function(
             self, 'GoogleAnalyticsToS3Handler',
             runtime=_lambda.Runtime.PYTHON_3_8,
             code=_lambda.Code.from_asset('./lambda'),
             handler='google_analytics_to_s3.handler',
             timeout=Duration.seconds(180),
-            role=role
+            role=lambda_role
         )
 
         s3_to_postgresql_lambda = _lambda.Function(
@@ -109,7 +103,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             code=_lambda.Code.from_asset('./lambda'),
             handler='s3_to_postgresql.handler',
             timeout=Duration.seconds(180),
-            role=role
+            role=lambda_role
         )
 
         # Run every day at 6PM UTC
