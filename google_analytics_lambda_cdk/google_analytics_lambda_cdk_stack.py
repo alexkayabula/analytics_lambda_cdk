@@ -42,7 +42,6 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         # Create an IAM role for the RDS Instance
         rds_import_role = iam.Role(
             self, "RDSImportRole",
-            id="RDSImportRole",
             assumed_by=iam.ServicePrincipal("rds.amazonaws.com")
         )
         rds_import_role.add_to_policy(iam.PolicyStatement(
@@ -87,7 +86,6 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         #  Create an IAM role for the Lambda functions
         lambda_role = iam.Role(
             self, "MyLambdaRole",
-            id="MyLambdaRole",
             assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
             managed_policies=[
                 iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3FullAccess"),
