@@ -21,7 +21,11 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
       # Create an S3 bucket
-        s3_bucket = s3.Bucket(self, "MyS3Bucket")
+        s3_bucket = s3.Bucket(
+            self, "MyS3Bucket",
+            bucket_name="MyS3Bucket",
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL
+            )
         s3_bucket.add_to_resource_policy(iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
             actions=["s3:GetObject"],
@@ -36,7 +40,9 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         ))
 
         # Create an IAM role for the RDS Instance
-        rds_import_role = iam.Role(self, "RDSImportRole",
+        rds_import_role = iam.Role(
+            self, "RDSImportRole",
+            id="RDSImportRole",
             assumed_by=iam.ServicePrincipal("rds.amazonaws.com")
         )
         rds_import_role.add_to_policy(iam.PolicyStatement(
@@ -81,6 +87,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         #  Create an IAM role for the Lambda functions
         lambda_role = iam.Role(
             self, "MyLambdaRole",
+            id="MyLambdaRole",
             assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
             managed_policies=[
                 iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3FullAccess"),
