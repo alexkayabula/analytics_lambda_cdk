@@ -54,7 +54,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
          #  Add permissions to the IAM role for the RDS Instance to import s3 data
         s3_bucket.grant_read_write(rds_import_role)
 
-        # Templated secret with username and password fields
+        # Secret with username and password fields
         secret = secretsmanager.Secret(
             self, "Secret",
             generate_secret_string=secretsmanager.SecretStringGenerator(
