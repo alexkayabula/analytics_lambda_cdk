@@ -55,6 +55,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         # Secret with username and password fields
         secret = secretsmanager.Secret(
             self, "Secret",
+            secret_name="mysecret",
             generate_secret_string=secretsmanager.SecretStringGenerator(
                 secret_string_template=json.dumps({"username": "postgres"}),
                 generate_string_key="password",
