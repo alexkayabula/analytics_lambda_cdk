@@ -13,6 +13,7 @@ from aws_cdk import (
     aws_ec2 as ec2,
     Stack,
     RemovalPolicy,
+    SecretValue
 )
 
 class GoogleAnalyticsLambdaCdkStack(Stack):
@@ -48,12 +49,16 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
          #  Add permissions to the IAM role for the RDS Instance to import s3 data
         s3_bucket.grant_read_write(rds_import_role)
 
-        # Simple secret
-        secret = secretsmanager.Secret(
-            self, "Secret",
-            secret_name="mySecret"
-            )
+        user = iam.User(self, "User")
+        access_key = iam.AccessKey(self, "AccessKey", user=user)
 
+        secret = secretsmanager.Secret(self, "Secret",
+            secret_object_value={
+                "username": SecretValue.unsafe_plain_text(user.user_name),
+                "password": access_key.secret_access_key
+            }
+        )
+        
         # Create an RDS instance
         vpc = ec2.Vpc(self, "Vpc")
         security_group = ec2.SecurityGroup(self, "SecurityGroup", vpc=vpc)
