@@ -20,14 +20,9 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # Templated secret with username and password fields
-        templated_secret = secretsmanager.Secret(self, "TemplatedSecret",
-            generate_secret_string=secretsmanager.SecretStringGenerator(
-                secret_string_template=json.dumps({"username": "postgres"}),
-                generate_string_key="password"
-            )
-        )
-
+        # Simple secret
+        secret = secretsmanager.Secret(self, "Secret")
+        
         # Create an RDS instance
         vpc = ec2.Vpc(self, "Vpc")
         security_group = ec2.SecurityGroup(self, "SecurityGroup", vpc=vpc)
@@ -43,10 +38,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             database_name="mydatabase",
             instance_identifier="mydbinstance",
             port=5432,
-            credentials={
-            "username": templated_secret.secret_value_from_json("username").to_string(),
-            "password": templated_secret.secret_value_from_json("password").to_string()
-        }
+            credentials=rds.Credentials.from_secret(secret),
         )
 
         # Create an S3 bucket
