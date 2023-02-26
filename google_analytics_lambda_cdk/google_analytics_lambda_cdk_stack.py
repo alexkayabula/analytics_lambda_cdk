@@ -20,9 +20,20 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        # Create an IAM role for importing data from S3
+        rds_role = iam.Role(self, "ImportRole",
+            assumed_by=iam.ServicePrincipal("rds.amazonaws.com")
+        )
+        rds_role.add_to_policy(iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            effect=iam.Effect.ALLOW,
+            actions=["s3:GetObject", "s3:ListBucket"],
+            resources=[bucket.bucket_arn, bucket.bucket_arn + "/*"]
+        ))
+
         # Simple secret
         secret = secretsmanager.Secret(self, "Secret")
-        
+
         # Create an RDS instance
         vpc = ec2.Vpc(self, "Vpc")
         security_group = ec2.SecurityGroup(self, "SecurityGroup", vpc=vpc)
@@ -39,6 +50,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             instance_identifier="mydbinstance",
             port=5432,
             credentials=rds.Credentials.from_secret(secret),
+            s3_import_role=rds_role
         )
 
         # Create an S3 bucket
@@ -57,20 +69,14 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         ))
 
         # Create an IAM role for the RDS instance to access S3
-        rds_role = iam.Role(self, "RDSRole",
+        rds_role = iam.Role(
+            self, "RDSRole",
             assumed_by=iam.ServicePrincipal("rds.amazonaws.com"),
         )
 
         # Grant the IAM role permissions to access the S3 bucket
         s3_bucket.grant_read_write(rds_role)
 
-        # Attach the IAM role to the RDS instance
-        rds_instance.role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3ReadOnlyAccess"))
-        rds_instance.role.add_to_policy(iam.PolicyStatement(
-            effect=iam.Effect.ALLOW,
-            actions=["s3:GetObject", "s3:ListBucket"],
-            resources=[s3_bucket.bucket_arn, s3_bucket.bucket_arn + "/*"]
-        ))
 
         #  Create an IAM role for the Lambda functions
         role = iam.Role(
