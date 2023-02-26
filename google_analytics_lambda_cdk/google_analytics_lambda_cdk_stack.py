@@ -62,7 +62,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         security_group = ec2.SecurityGroup(self, "SecurityGroup", vpc=vpc)
         rds_instance = rds.DatabaseInstance(self, "RDSInstance",
             engine=rds.DatabaseInstanceEngine.postgres(version=rds.PostgresEngineVersion.VER_13),
-            instance_type=ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.MICRO),
+            instance_type=ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MICRO),
             vpc=vpc,
             vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PUBLIC),
             security_groups=[security_group],
