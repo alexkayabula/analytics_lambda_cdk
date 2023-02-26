@@ -24,7 +24,6 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         s3_bucket = s3.Bucket(
             self, "MyS3Bucket",
             bucket_name="my-s3-bucket-2024",
-            block_public_access=s3.BlockPublicAccess.BLOCK_ALL
             )
         s3_bucket.add_to_resource_policy(iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
