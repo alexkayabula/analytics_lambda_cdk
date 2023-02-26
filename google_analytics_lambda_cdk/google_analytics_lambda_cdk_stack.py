@@ -49,8 +49,8 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         s3_bucket.grant_read_write(rds_import_role)
 
         # Templated secret with username and password fields
-        templated_secret = secretsmanager.Secret(
-            self, "TemplatedSecret",
+        secret = secretsmanager.Secret(
+            self, "Secret",
             generate_secret_string=secretsmanager.SecretStringGenerator(
                 secret_string_template=json.dumps({"username": "postgres"}),
                 generate_string_key="password"
@@ -72,10 +72,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             database_name="mydatabase",
             instance_identifier="mydbinstance",
             port=5432,
-            credentials={
-            "username": templated_secret.secret_value_from_json("username").to_string(),
-            "password": templated_secret.secret_value_from_json("password")
-            },
+            credentials=rds.Credentials.from_secret(secret),
             s3_import_role=rds_import_role
         )
 
