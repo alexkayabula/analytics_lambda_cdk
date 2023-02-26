@@ -49,7 +49,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         s3_bucket.grant_read_write(rds_import_role)
 
         # Simple secret
-        secret = secretsmanager.Secret(self, "Secret")
+        secret = secretsmanager.Secret(self, "secret")
 
         # Create an RDS instance
         vpc = ec2.Vpc(self, "Vpc")
