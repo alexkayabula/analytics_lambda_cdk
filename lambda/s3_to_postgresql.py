@@ -1,3 +1,4 @@
+import json
 import sys
 import logging
 import psycopg2
@@ -10,7 +11,7 @@ logger.setLevel(logging.INFO)
 
 def get_secret():
     secret_name = "mysecret"
-    region_name = "us-west-1"
+    region_name = "eu-west-1"
 
     session = boto3.session.Session()
     client = session.client(
@@ -27,10 +28,11 @@ def get_secret():
         # Depending on whether the secret was a string or binary, only one of these fields will be populated
         if 'SecretString' in get_secret_value_response:
             text_secret_data = get_secret_value_response['SecretString']
-            rds_host  = text_secret_data["host"]
-            db_name = text_secret_data["dbname"]
-            name = text_secret_data["user"]
-            password = text_secret_data["password"]
+            text_secret_json_data = json.loads( text_secret_data )
+            rds_host  =  text_secret_json_data["host"]
+            db_name =  text_secret_json_data["dbname"]
+            name =  text_secret_json_data["username"]
+            password =  text_secret_json_data["password"]
             return rds_host, name, password, db_name
         else:
             binary_secret_data = get_secret_value_response['SecretBinary']
@@ -48,8 +50,8 @@ def get_secret():
         
 
 try:
-    rds_host, name, password, db_name = get_secret()
-    conn = psycopg2.connect(host=rds_host, user=name, password=password, database=db_name)
+   rds_host, name, password, db_name = get_secret()
+   conn = psycopg2.connect(host=rds_host, user=name, password=password, database=db_name)
 except psycopg2.DatabaseError as e:
     logger.error("ERROR: Unexpected error: Could not connect to PostgreSQL instance.")
     logger.error(e)
