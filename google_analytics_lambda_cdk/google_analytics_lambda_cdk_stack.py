@@ -48,11 +48,6 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
          #  Add permissions to the IAM role for the RDS Instance to import s3 data
         s3_bucket.grant_read_write(rds_import_role)
 
-        # Simple secret
-        secret = secretsmanager.Secret(
-            self, "Secret",
-            secret_name="secret"
-            )
 
         # Create an RDS instance
         vpc = ec2.Vpc(self, "Vpc")
@@ -69,7 +64,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             database_name="mydatabase",
             instance_identifier="mydbinstance",
             port=5432,
-            credentials=rds.Credentials.from_secret(secret),
+            credentials=rds.Credentials.from_secret("secret"),
             s3_import_role=rds_import_role
         )
 
