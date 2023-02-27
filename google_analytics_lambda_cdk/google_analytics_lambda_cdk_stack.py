@@ -38,6 +38,19 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             principals=[iam.AnyPrincipal()]
         ))
 
+        #  Create an IAM role for the Lambda functions
+        lambda_role = iam.Role(
+            self, "MyLambdaRole",
+            assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
+            managed_policies=[
+                iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3FullAccess"),
+                iam.ManagedPolicy.from_aws_managed_policy_name("AWSLambda_FullAccess"),
+                iam.ManagedPolicy.from_aws_managed_policy_name("CloudWatchLogsFullAccess")
+            ]
+        )
+        #  Add permissions to the IAM role for the Lambda functions to access s3 bucket
+        s3_bucket.grant_read_write(lambda_role)
+
         # Create an IAM role for the RDS Instance
         rds_import_role = iam.Role(
             self, "RDSImportRole",
@@ -63,6 +76,9 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             )
         )
 
+        secret.grant_read(lambda_role)
+        secret.grant_write(lambda_role)
+
         # Create an RDS instance
         vpc = ec2.Vpc(self, "Vpc")
         security_group = ec2.SecurityGroup(self, "SecurityGroup", vpc=vpc)
@@ -81,21 +97,6 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             credentials=rds.Credentials.from_secret(secret),
             s3_import_role=rds_import_role
         )
-
-
-        #  Create an IAM role for the Lambda functions
-        lambda_role = iam.Role(
-            self, "MyLambdaRole",
-            assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
-            managed_policies=[
-                iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3FullAccess"),
-                iam.ManagedPolicy.from_aws_managed_policy_name("AWSLambda_FullAccess"),
-                iam.ManagedPolicy.from_aws_managed_policy_name("CloudWatchLogsFullAccess")
-            ]
-        )
-
-        #  Add permissions to the IAM role for the Lambda functions to access s3 bucket
-        s3_bucket.grant_read_write(lambda_role)
 
 
         #  Defines an AWS Lambda resources
