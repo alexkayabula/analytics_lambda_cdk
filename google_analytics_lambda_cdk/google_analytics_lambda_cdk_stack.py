@@ -97,7 +97,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             credentials=rds.Credentials.from_secret(secret),
             s3_import_role=rds_import_role
         )
-
+        rds_instance.connections.allow_default_port_from_any_ipv4()
 
         #  Defines an AWS Lambda resources
         google_analytics_to_s3_lambda = _lambda.Function(
