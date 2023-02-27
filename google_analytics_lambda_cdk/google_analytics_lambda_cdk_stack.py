@@ -62,10 +62,11 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             resources=[s3_bucket.bucket_arn, s3_bucket.bucket_arn + "/*"]
         ))
 
-         #  Add permissions to the IAM role for the RDS Instance to import s3 data
+         #  Add permissions to the IAM role for the RDS Instance to import s3 data.
         s3_bucket.grant_read_write(rds_import_role)
 
-        # Secret with username and password fields
+        # Secret with username and password fields 
+        # Exclude characters to prevent errors when generating automatic password.
         secret = secretsmanager.Secret(
             self, "Secret",
             secret_name="mysecret",
@@ -76,6 +77,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             )
         )
 
+       # Add permission for the IAM role to access AWS Secret Manager secret.
         secret.grant_read(lambda_role)
         secret.grant_write(lambda_role)
 
@@ -118,7 +120,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             role=lambda_role
         )
 
-        # Run every day at 6PM UTC
+        # Schedule lambdas to run every day at specific time.
         # See https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html
 
         rule_one = events.Rule(

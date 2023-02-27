@@ -4,8 +4,8 @@ import json
 import boto3
 from oauth2client.service_account import ServiceAccountCredentials
 
-S3_BUCKET = os.getenv('S3_BUCKET')
-SCOPE = os.getenv('SCOPE')
+S3_BUCKET = "my-s3-bucket-2024"
+SCOPE = "https://www.googleapis.com/auth/analytics.readonly"
 s3_client = boto3.client('s3')
 
 # Connect to s3, generate Google analytics access token from json secret file
@@ -20,6 +20,8 @@ def generate_access_token():
         An access token that is associated with the service account credentials.
     """
 
+    # Note: The google_analytics_secrets.json file containing google analytics credentials is 
+    # uploaded into the bucket from Amazon management console .
     s3_json_object = s3_client.get_object(Bucket=S3_BUCKET, Key="google_analytics_secrets.json")
     json_file = s3_json_object['Body'].read().decode("utf-8")
     json_data = json.loads(json_file)

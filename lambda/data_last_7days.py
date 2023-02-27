@@ -4,7 +4,7 @@ import logging
 import requests
 
 
-GOOGLE_ANALYTICS_URL = os.getenv('GOOGLE_ANALYTICS_URL')
+GOOGLE_ANALYTICS_URL = "https://analyticsdata.googleapis.com/v1beta/properties/327357256:runReport?"
 
 # Fetch most visited pages in the last 7 days data.
 def fetch_visited_pages(access_token):
