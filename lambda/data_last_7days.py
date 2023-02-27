@@ -20,7 +20,6 @@ def fetch_visited_pages(access_token):
         logging.debug("[Google Analytics] Error fetching data", e)
     else:
         result = json.loads(response.text)
-        print(result)
         data = result["rows"]
         most_visited_pages = []
         for item in data:
