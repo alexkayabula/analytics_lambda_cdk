@@ -1,10 +1,9 @@
-import os
 import json
 import logging
 import requests
 
 
-GOOGLE_ANALYTICS_URL = "https://analyticsdata.googleapis.com/v1beta/properties/327357256:runReport?"
+GOOGLE_ANALYTICS_URL = "https://analyticsdata.googleapis.com/v1beta/properties/327357256:runReport?access_token="
 
 # Fetch most visited pages in the last 7 days data.
 def fetch_visited_pages(access_token):
@@ -21,6 +20,7 @@ def fetch_visited_pages(access_token):
         logging.debug("[Google Analytics] Error fetching data", e)
     else:
         result = json.loads(response.text)
+        print(result)
         data = result["rows"]
         most_visited_pages = []
         for item in data:
