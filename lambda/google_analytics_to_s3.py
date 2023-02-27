@@ -11,7 +11,7 @@ from data_last_7days import fetch_visited_pages
 S3_BUCKET = "my-s3-bucket-2024"
 s3_client = boto3.client('s3')
 
-def handler():
+def handler(event, context):
     try:
         data = []
         # Fetch data from Google Analytics.
@@ -33,5 +33,3 @@ def handler():
             s3_client.put_object(Bucket=S3_BUCKET, ContentType='text/csv', Key=fileName, Body=csvio.getvalue())
     except Exception as e:
         logging.error("Error uploading Google Analytics data to s3", e)
-
-handler()
