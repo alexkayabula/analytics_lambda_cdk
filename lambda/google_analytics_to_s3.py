@@ -28,8 +28,7 @@ def handler(event, context):
         for item in data[0]:
             values = list(item.values())
             writer.writerow(values)
-            # Upload csv file to s3 bucket.
-            s3_client.upload_file(fileName, S3_BUCKET)
+            
             # Upload data to s3 bucket CSV file.
             s3_client.put_object(Bucket=S3_BUCKET, ContentType='text/csv', Key=fileName, Body=csvio.getvalue())
     except Exception as e:
