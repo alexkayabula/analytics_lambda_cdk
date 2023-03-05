@@ -7,6 +7,7 @@ from datetime import datetime
 import boto3
 from helper import generate_access_token
 from data_last_7days import fetch_visited_pages
+from data_last_365days import fetch_visited_pages_365days
 
 S3_BUCKET = "my-s3-bucket-2024"
 s3_client = boto3.client('s3')
@@ -21,6 +22,29 @@ def handler(event, context):
         
         # Generate csv  file.
         fileName = "most-visited-pages-7days" + ".csv"
+        csvio = io.StringIO()
+        writer = csv.writer(csvio)
+        headers = list(data[0][0].keys())
+        writer.writerow(headers)
+        for item in data[0]:
+            values = list(item.values())
+            writer.writerow(values)
+
+            # Upload data to s3 bucket CSV file.
+            s3_client.put_object(Bucket=S3_BUCKET, ContentType='text/csv', Key=fileName, Body=csvio.getvalue())
+
+    except Exception as e:
+        logging.error("Error uploading Google Analytics data to s3", e)
+
+    try:
+        data = []
+        # Fetch data from Google Analytics.
+        access_token = generate_access_token()
+        most_visited_pages_365days = fetch_visited_pages_365days(access_token=access_token)
+        data.append(most_visited_pages_365days)
+        
+        # Generate csv  file.
+        fileName = "most-visited-pages-365days" + ".csv"
         csvio = io.StringIO()
         writer = csv.writer(csvio)
         headers = list(data[0][0].keys())
