@@ -153,7 +153,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             self,  "RuleOne",
             schedule=events.Schedule.cron(
                 minute='10',
-                hour='21',
+                hour='22',
                 month='*',
                 week_day='MON-SUN',
                 year="*",
