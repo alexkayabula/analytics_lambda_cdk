@@ -82,8 +82,41 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         secret.grant_read(lambda_role)
         secret.grant_write(lambda_role)
 
+
+        # Create a VPC
+        vpc = ec2.Vpc(
+            self, 'MyVpc',
+            cidr='10.0.0.0/16',
+            max_azs=2,
+            subnet_configuration=[
+                ec2.SubnetConfiguration(
+                    name='public',
+                    subnet_type=ec2.SubnetType.PUBLIC,
+                    cidr_mask=24
+                )
+            ]
+        )
+
+        # Cost optimization
+        # Reference: https://aws.amazon.com/premiumsupport/knowledge-center/vpc-reduce-nat-gateway-transfer-costs/
+        # Reference: https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html
+        # Reference: https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html
+        
+        # Create a gateway VPC endpoint for S3
+        s3_endpoint = ec2.GatewayVpcEndpoint(
+            self, 'S3Endpoint',
+            service=ec2.GatewayVpcEndpointAwsService.S3,
+            vpc=vpc
+        )
+
+        # Add the endpoint as a target in the VPC's route table for traffic destined to S3
+        vpc.add_gateway_endpoint_route(
+            'S3Route',
+            service=ec2.GatewayVpcEndpointAwsService.S3,
+            gateway_endpoint=s3_endpoint
+        )
+
         # Create an RDS instance
-        vpc = ec2.Vpc(self, "Vpc")
         security_group = ec2.SecurityGroup(self, "SecurityGroup", vpc=vpc)
         rds_instance = rds.DatabaseInstance(self, "RDSInstance",
             engine=rds.DatabaseInstanceEngine.postgres(version=rds.PostgresEngineVersion.VER_13),
