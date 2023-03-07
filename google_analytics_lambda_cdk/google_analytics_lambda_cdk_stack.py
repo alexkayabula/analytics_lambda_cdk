@@ -24,7 +24,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         s3_bucket = s3.Bucket(
             self, "MyS3Bucket",
             # The line below breaks cdk deploy
-            # block_public_access=s3.BlockPublicAccess.BLOCK_ALL, 
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL, 
             bucket_name="my-s3-bucket-2024",
             )
         s3_bucket.add_to_resource_policy(iam.PolicyStatement(
@@ -152,7 +152,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         rule_one = events.Rule(
             self,  "RuleOne",
             schedule=events.Schedule.cron(
-                minute='23',
+                minute='32',
                 hour='20',
                 month='*',
                 week_day='MON-SUN',
@@ -163,7 +163,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         rule_two = events.Rule(
             self, "RuleTwo",
             schedule=events.Schedule.cron(
-                minute='25',
+                minute='34',
                 hour='20',
                 month='*',
                 week_day='MON-SUN',
