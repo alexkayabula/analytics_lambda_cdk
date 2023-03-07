@@ -86,7 +86,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
 
 
         # Create a VPC
-        vpc = ec2.Vpc(self, "Vpc")
+        vpc = ec2.Vpc(self, "Vpc", nat_gateways=0)
 
         # Cost optimization
         # Reference: https://aws.amazon.com/premiumsupport/knowledge-center/vpc-reduce-nat-gateway-transfer-costs/
