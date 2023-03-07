@@ -57,6 +57,8 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             self, "RDSImportRole",
             assumed_by=iam.ServicePrincipal("rds.amazonaws.com")
         )
+
+        # Add policy to access s3 bucket
         rds_import_role.add_to_policy(iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
             actions=["s3:GetObject", "s3:ListBucket"],
@@ -85,7 +87,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
 
         # Create a VPC
         vpc = ec2.Vpc(
-            self, 'MyVpc',
+            self, 'AnalyticsVpc',
             cidr='10.0.0.0/16',
             max_azs=2,
             subnet_configuration=[
@@ -103,14 +105,16 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         # Reference: https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html
 
         # Create a gateway VPC endpoint for S3
-        s3_endpoint = ec2.GatewayVpcEndpoint(
-            self, "S3Endpoint",
-            service=ec2.GatewayVpcEndpointAwsService.S3,
-            vpc=vpc
+        s3_endpoint = vpc.add_gateway_endpoint("S3Endpoint",
+        service=ec2.GatewayVpcEndpointAwsService.S3
         )
 
-        # Add the endpoint as a target in the VPC's route table for traffic destined to S3
-        vpc.add_gateway_endpoint(self, "S3Route",service=s3_endpoint)
+       # Add and customize policy to access s3
+        s3_endpoint.add_to_policy(iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=["s3:GetObject", "s3:ListBucket"],
+            resources=[s3_bucket.bucket_arn, s3_bucket.bucket_arn + "/*"]
+        ))
 
         # Create an RDS instance
         security_group = ec2.SecurityGroup(self, "SecurityGroup", vpc=vpc)
