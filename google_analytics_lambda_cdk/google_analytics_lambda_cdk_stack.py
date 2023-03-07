@@ -23,7 +23,8 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
       # Create an S3 bucket
         s3_bucket = s3.Bucket(
             self, "MyS3Bucket",
-            # block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            # The line below breaks cdk deploy
+            # block_public_access=s3.BlockPublicAccess.BLOCK_ALL, 
             bucket_name="my-s3-bucket-2024",
             )
         s3_bucket.add_to_resource_policy(iam.PolicyStatement(
