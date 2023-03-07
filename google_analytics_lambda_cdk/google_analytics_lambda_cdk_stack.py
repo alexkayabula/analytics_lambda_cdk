@@ -113,7 +113,8 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         s3_endpoint.add_to_policy(iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
             actions=["s3:GetObject", "s3:ListBucket"],
-            resources=[s3_bucket.bucket_arn, s3_bucket.bucket_arn + "/*"]
+            resources=[s3_bucket.bucket_arn, s3_bucket.bucket_arn + "/*"],
+            principals=[iam.AnyPrincipal()]
         ))
 
         # Create an RDS instance
