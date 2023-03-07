@@ -112,8 +112,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         # Add the endpoint as a target in the VPC's route table for traffic destined to S3
         vpc.add_gateway_endpoint(
             'S3Route',
-            service=ec2.GatewayVpcEndpointAwsService.S3,
-            gateway_endpoint=s3_endpoint
+            service=s3_endpoint
         )
 
         # Create an RDS instance
