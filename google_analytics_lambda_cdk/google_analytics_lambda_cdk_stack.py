@@ -95,18 +95,18 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         # Reference: https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html
         # Reference: https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html
 
-    #     # Create a gateway VPC endpoint for S3
-    #     s3_endpoint = vpc.add_gateway_endpoint("S3Endpoint",
-    #     service=ec2.GatewayVpcEndpointAwsService.S3
-    #     )
+        # Create a gateway VPC endpoint for S3
+        s3_endpoint = vpc.add_gateway_endpoint("S3Endpoint",
+        service=ec2.GatewayVpcEndpointAwsService.S3
+        )
 
-    #    # Add and customize policy to access s3
-    #     s3_endpoint.add_to_policy(iam.PolicyStatement(
-    #         effect=iam.Effect.ALLOW,
-    #         actions=["s3:GetObject", "s3:ListBucket"],
-    #         resources=[s3_bucket.bucket_arn, s3_bucket.bucket_arn + "/*"],
-    #         principals=[iam.AnyPrincipal()]
-    #     ))
+       # Add and customize policy to access s3
+        s3_endpoint.add_to_policy(iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=["s3:GetObject", "s3:ListBucket"],
+            resources=[s3_bucket.bucket_arn, s3_bucket.bucket_arn + "/*"],
+            principals=[iam.AnyPrincipal()]
+        ))
 
         # Create an RDS instance
         security_group = ec2.SecurityGroup(self, "SecurityGroup", vpc=vpc)
