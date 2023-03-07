@@ -110,7 +110,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         )
 
         # Add the endpoint as a target in the VPC's route table for traffic destined to S3
-        vpc.add_gateway_endpoint(self, 'S3Route',service=s3_endpoint)
+        vpc.add_gateway_endpoint(self, "S3Route",service=s3_endpoint)
 
         # Create an RDS instance
         security_group = ec2.SecurityGroup(self, "SecurityGroup", vpc=vpc)
