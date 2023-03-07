@@ -152,7 +152,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         rule_one = events.Rule(
             self,  "RuleOne",
             schedule=events.Schedule.cron(
-                minute='36',
+                minute='42',
                 hour='17',
                 month='*',
                 week_day='MON-SUN',
@@ -163,8 +163,8 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         rule_two = events.Rule(
             self, "RuleTwo",
             schedule=events.Schedule.cron(
-                minute='40',
-                hour='17',
+                minute='45',
+                hour='19',
                 month='*',
                 week_day='MON-SUN',
                 year='*'
