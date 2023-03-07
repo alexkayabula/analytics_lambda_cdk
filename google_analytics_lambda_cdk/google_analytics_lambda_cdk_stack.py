@@ -101,7 +101,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         # Reference: https://aws.amazon.com/premiumsupport/knowledge-center/vpc-reduce-nat-gateway-transfer-costs/
         # Reference: https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html
         # Reference: https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html
-        
+
         # Create a gateway VPC endpoint for S3
         s3_endpoint = ec2.GatewayVpcEndpoint(
             self, 'S3Endpoint',
@@ -110,7 +110,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         )
 
         # Add the endpoint as a target in the VPC's route table for traffic destined to S3
-        vpc.add_gateway_endpoint_route(
+        vpc.add_gateway_endpoint(
             'S3Route',
             service=ec2.GatewayVpcEndpointAwsService.S3,
             gateway_endpoint=s3_endpoint
