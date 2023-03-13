@@ -1,5 +1,5 @@
 
-## Google Analytics to AWS Data pipeline!
+## Analytics to AWS Data pipeline!
 
 #### Documentation:
 ###### https://docs.google.com/document/d/1RVJVExn5PTyuFa3BcTEFBoKaBXfkeqAlcIWjNxAupIE/edit?usp=sharing

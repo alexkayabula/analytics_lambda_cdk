@@ -4,7 +4,7 @@ import logging
 import psycopg2
 import boto3
 from botocore.exceptions import ClientError
-from database import database
+from ....database import database
 
 # Initialize info and error logging.
 logger = logging.getLogger()
