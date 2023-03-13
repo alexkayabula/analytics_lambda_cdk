@@ -51,22 +51,3 @@ except psycopg2.DatabaseError as e:
     sys.exit()
 
 logger.info("SUCCESS: Connection to RDS PostgreSQL instance succeeded.")
-
-def handler(event, context):
-    """
-    Fetch content from s3 to RDS PostgreSQL instance database.
-    """
-
-    with conn.cursor() as cur:
-        cur.execute("CREATE EXTENSION IF NOT EXISTS aws_s3 CASCADE;")
-        cur.execute("DROP TABLE IF EXISTS most_visited_pages_7days;")
-        cur.execute("CREATE TABLE most_visited_pages_7days(page varchar(255), views varchar(255), users varchar(255), views_per_user varchar(255), avg_engagement_time varchar(255));")
-        cur.execute("SELECT aws_s3.table_import_from_s3( 'most_visited_pages_7days','','(format csv)','(my-s3-bucket-2024,most-visited-pages-7days.csv,eu-west-1)');")
-
-        cur.execute("DROP TABLE IF EXISTS most_visited_pages_365days;")
-        cur.execute("CREATE TABLE most_visited_pages_365days(date varchar(255), page varchar(255), views varchar(255), users varchar(255), views_per_user varchar(255), avg_engagement_time varchar(255));")
-        cur.execute("SELECT aws_s3.table_import_from_s3( 'most_visited_pages_365days','','(format csv)','(my-s3-bucket-2024,most-visited-pages-365days.csv,eu-west-1)');")
-    conn.commit()
-
-    logger.info("SUCCESS: Added items to RDS PostgreSQL table.")
-    return "SUCCESS: Added items to RDS PostgreSQL table." 

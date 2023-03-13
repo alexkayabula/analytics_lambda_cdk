@@ -1,7 +1,7 @@
 import json
 import logging
 import requests
-from date_formatter import formatDate
+from google_analytics.helpers.date_formatter import formatDate
 
 
 GOOGLE_ANALYTICS_URL = "https://analyticsdata.googleapis.com/v1beta/properties/327357256:runReport?access_token="
