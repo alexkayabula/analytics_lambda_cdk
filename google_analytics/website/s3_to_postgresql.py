@@ -25,4 +25,3 @@ def handler(event, context):
 
     logger.info("SUCCESS: Added items to RDS PostgreSQL table.")
     return "SUCCESS: Added items to RDS PostgreSQL table." 
-handler("", "")
