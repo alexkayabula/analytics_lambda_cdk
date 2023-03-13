@@ -1,13 +1,11 @@
 import json
 import logging
 import requests
-from date_formatter import formatDate
-
 
 GOOGLE_ANALYTICS_URL = "https://analyticsdata.googleapis.com/v1beta/properties/327357256:runReport?access_token="
 
 # Fetch most visited pages in the last 365 days data.
-def fetch_visited_pages_365days(access_token):
+def fetch_visited_pages_365days(access_token, format_date):
     url = f'{GOOGLE_ANALYTICS_URL}{access_token}'
     try:
         logging.info("[Google Analytics] Fetching most visited pages data for last 365 days.")
@@ -25,7 +23,7 @@ def fetch_visited_pages_365days(access_token):
         most_visited_pages = []
         for item in data:
             date_string = item["dimensionValues"][0]['value']
-            date = formatDate(date_string)
+            date = format_date(date_string)
             views = item["metricValues"][0]["value"]
             users = item["metricValues"][1]['value']
             pages = item["dimensionValues"][1]['value']

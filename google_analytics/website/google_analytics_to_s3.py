@@ -5,6 +5,7 @@ import boto3
 from data.google_analytics_token import generate_access_token
 from data.data_last_7days import fetch_visited_pages
 from data.data_last_365days import fetch_visited_pages_365days
+from data.date_formatter import formatDate
 
 S3_BUCKET = "my-s3-bucket-2024"
 s3_client = boto3.client('s3')
@@ -14,7 +15,8 @@ def handler(event, context):
         data = []
         # Fetch data from Google Analytics.
         access_token = generate_access_token()
-        most_visited_pages = fetch_visited_pages(access_token=access_token)
+        format_date = formatDate()
+        most_visited_pages = fetch_visited_pages(access_token=access_token, format_date=format_date)
         data.append(most_visited_pages)
         
         # Generate csv  file.
@@ -37,7 +39,8 @@ def handler(event, context):
         data = []
         # Fetch data from Google Analytics.
         access_token = generate_access_token()
-        most_visited_pages_365days = fetch_visited_pages_365days(access_token=access_token)
+        format_date = formatDate()
+        most_visited_pages_365days = fetch_visited_pages_365days(access_token=access_token, format_date=format_date)
         data.append(most_visited_pages_365days)
         
         # Generate csv  file.
