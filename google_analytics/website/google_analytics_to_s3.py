@@ -5,9 +5,9 @@ import logging
 import csv
 from datetime import datetime
 import boto3
-from google_analytics.helpers.helper import generate_access_token
-from google_analytics.website.data.data_last_7days import fetch_visited_pages
-from google_analytics.website.data.data_last_365days import fetch_visited_pages_365days
+from google_analytics.website.data.helper import generate_access_token
+from data.data_last_7days import fetch_visited_pages
+from data.data_last_365days import fetch_visited_pages_365days
 
 S3_BUCKET = "my-s3-bucket-2024"
 s3_client = boto3.client('s3')

@@ -1,18 +1,12 @@
-import json
-import sys
 import logging
-import psycopg2
-import boto3
-from botocore.exceptions import ClientError
-from ....database import database
+from database.database import database_connection
 
 # Initialize info and error logging.
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 # Initialize AWS RDS PostgreSQL database connection.
-connection = database()
-
+connection = database_connection()
 def handler(event, context):
     """
     Fetch content from s3 to RDS PostgreSQL instance database.
@@ -31,3 +25,4 @@ def handler(event, context):
 
     logger.info("SUCCESS: Added items to RDS PostgreSQL table.")
     return "SUCCESS: Added items to RDS PostgreSQL table." 
+handler("", "")
