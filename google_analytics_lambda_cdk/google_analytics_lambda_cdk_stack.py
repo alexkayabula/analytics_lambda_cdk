@@ -132,7 +132,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         packages_layer = python_alpha.PythonLayerVersion(
                 self,
                 'CommonLayer',
-                entry='.build/common_layer',
+                entry='./common_layer',
                 compatible_runtimes=[_lambda.Runtime.PYTHON_3_8],
                 removal_policy=RemovalPolicy.DESTROY,
         )
