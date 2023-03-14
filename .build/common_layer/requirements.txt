@@ -5,5 +5,4 @@ constructs==10.1.221
 httplib2==0.21.0
 oauth2client==4.1.3
 requests
-psycopg2
 aws-cdk.aws-lambda-python-alpha
