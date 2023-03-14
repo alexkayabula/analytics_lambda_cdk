@@ -141,7 +141,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         google_analytics_to_s3_lambda = _lambda.Function(
             self, 'GoogleAnalyticsToS3Handler',
             runtime=_lambda.Runtime.PYTHON_3_8,
-            code=_lambda.Code.from_asset('./google_analytics/website'),
+            code=_lambda.Code.from_asset('.build/lambdas'),
             handler='google_analytics_to_s3.handler',
             timeout=Duration.seconds(180),
             role=lambda_role,
@@ -151,7 +151,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         s3_to_postgresql_lambda = _lambda.Function(
             self, 'S3ToPostgresHandler',
             runtime=_lambda.Runtime.PYTHON_3_8,
-            code=_lambda.Code.from_asset('./google_analytics/website'),
+            code=_lambda.Code.from_asset('.build/lambdas'),
             handler='s3_to_postgresql.handler',
             timeout=Duration.seconds(180),
             role=lambda_role,
