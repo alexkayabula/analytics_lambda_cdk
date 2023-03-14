@@ -48,3 +48,4 @@ typing-extensions==4.4.0
 urllib3==1.26.14
 wrapt==1.14.1
 zipp==3.11.0
+aws-cdk.aws-lambda-python-alpha
