@@ -1,7 +1,8 @@
 aws-cdk-lib==2.26.0
 boto3==1.26.50
 botocore==1.29.50
+constructs==10.1.221
+httplib2==0.21.0
 oauth2client==4.1.3
 requests
-psycopg2
 aws-cdk.aws-lambda-python-alpha
