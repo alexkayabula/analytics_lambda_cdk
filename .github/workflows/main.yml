@@ -30,11 +30,10 @@ jobs:
       - name: Install AWS CDK
         run: 'sudo npm install -g aws-cdk'
 
-      # - name: Install Requirements 
-      #   run: 'pip3 install -r requirements.txt'
+      - name: Install Requirements 
+        run: 'pip3 install -r requirements.txt'
 
       - name: CDK Diff
-        run: 'pip3 install -r requirements.txt'
         run: cdk diff
 
       - name: CDK Synth
