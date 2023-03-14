@@ -14,11 +14,25 @@ from aws_cdk import (
     Stack,
     RemovalPolicy,
 )
+from cdk_lambda_layer_builder.constructs import BuildPyLayerAsset
 
 class GoogleAnalyticsLambdaCdkStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+        # Create the pipy layer
+        pypi_layer_asset = BuildPyLayerAsset.from_pypi(self, 'PyPiLayerAsset',
+            pypi_requirements=['oauth2client', 'psycopg2', 'botocore', 'boto3', 'requests'],
+            py_runtime=_lambda.Runtime.PYTHON_3_8,
+        )
+        pypi_layer =_lambda.LayerVersion(
+                self,
+                id='PyPiLayer',
+                code=_lambda.Code.from_bucket(pypi_layer_asset.asset_bucket, pypi_layer_asset.asset_key),
+                compatible_runtimes=[_lambda.Runtime.PYTHON_3_8],
+                description ='PyPi python modules'
+            )
 
       # Create an S3 bucket
         s3_bucket = s3.Bucket(
@@ -134,7 +148,8 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             code=_lambda.Code.from_asset('./google_analytics/website'),
             handler='google_analytics_to_s3.handler',
             timeout=Duration.seconds(180),
-            role=lambda_role
+            role=lambda_role,
+            layers=[pypi_layer]
         )
 
         s3_to_postgresql_lambda = _lambda.Function(
@@ -143,7 +158,8 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             code=_lambda.Code.from_asset('./google_analytics/website'),
             handler='s3_to_postgresql.handler',
             timeout=Duration.seconds(180),
-            role=lambda_role
+            role=lambda_role,
+            layers=[pypi_layer]
         )
 
         # Schedule lambdas to run every day at specific time.
