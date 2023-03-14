@@ -137,6 +137,10 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
                 removal_policy=RemovalPolicy.DESTROY,
         )
 
+        #  Add external psycopg2 lambda layer
+        psycopg2_layer = _lambda.LayerVersion.from_layer_version_arn(self, 'psycopg2Layer', 'arn:aws:lambda:eu-west-1:015922206198:layer:auth-layer1:2')
+
+
         #  Defines an AWS Lambda resources
         google_analytics_to_s3_lambda = _lambda.Function(
             self, 'GoogleAnalyticsToS3Handler',
@@ -155,7 +159,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             handler='s3_to_postgresql.handler',
             timeout=Duration.seconds(180),
             role=lambda_role,
-            layers=[common_layer]
+            layers=[common_layer, psycopg2_layer]
         )
 
         # Schedule lambdas to run every day at specific time.
