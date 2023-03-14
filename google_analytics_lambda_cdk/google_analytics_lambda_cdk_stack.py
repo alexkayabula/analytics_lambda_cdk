@@ -159,7 +159,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
             handler='s3_to_postgresql.handler',
             timeout=Duration.seconds(180),
             role=lambda_role,
-            layers=[common_layer, psycopg2_layer]
+            layers=[psycopg2_layer]
         )
 
         # Schedule lambdas to run every day at specific time.
