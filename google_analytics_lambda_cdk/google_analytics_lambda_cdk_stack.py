@@ -14,7 +14,7 @@ from aws_cdk import (
     Stack,
     RemovalPolicy,
 )
-from aws_cdk import aws_lambda_python_alpha as python_alpha
+from aws_cdk.aws_lambda_python_alpha import PythonLayerVersion
 
 class GoogleAnalyticsLambdaCdkStack(Stack):
 
@@ -129,7 +129,7 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         rds_instance.connections.allow_default_port_from_any_ipv4()
 
         #  Add lambda layer
-        packages_layer = python_alpha.PythonLayerVersion(
+        common_layer = PythonLayerVersion(
                 self,
                 'CommonLayer',
                 entry='.build/common_layer',
@@ -141,21 +141,21 @@ class GoogleAnalyticsLambdaCdkStack(Stack):
         google_analytics_to_s3_lambda = _lambda.Function(
             self, 'GoogleAnalyticsToS3Handler',
             runtime=_lambda.Runtime.PYTHON_3_8,
-            code=_lambda.Code.from_asset('.build/lambdas'),
+            code=_lambda.Code.from_asset('.build/lambdas/website'),
             handler='google_analytics_to_s3.handler',
             timeout=Duration.seconds(180),
             role=lambda_role,
-            layers=[packages_layer]
+            layers=[common_layer]
         )
 
         s3_to_postgresql_lambda = _lambda.Function(
             self, 'S3ToPostgresHandler',
             runtime=_lambda.Runtime.PYTHON_3_8,
-            code=_lambda.Code.from_asset('.build/lambdas'),
+            code=_lambda.Code.from_asset('.build/lambdas/webiste'),
             handler='s3_to_postgresql.handler',
             timeout=Duration.seconds(180),
             role=lambda_role,
-            layers=[packages_layer]
+            layers=[common_layer]
         )
 
         # Schedule lambdas to run every day at specific time.
